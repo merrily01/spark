@@ -232,6 +232,11 @@ private[spark] object Config extends Logging {
       .stringConf
       .createOptional
 
+  val KUBERNETES_HOSTNETWORK_SUPPORT =
+    ConfigBuilder("spark.kubernetes.hostnetwork.enabled")
+      .booleanConf
+      .createWithDefault(false)
+
   val KUBERNETES_AUTH_SUBMISSION_CONF_PREFIX =
     "spark.kubernetes.authenticate.submission"
 

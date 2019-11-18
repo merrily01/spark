@@ -53,6 +53,8 @@ private[spark] class BasicDriverFeatureStep(
       MEMORY_OVERHEAD_MIN_MIB))
   private val driverMemoryWithOverheadMiB = driverMemoryMiB + memoryOverheadMiB
 
+  private val isHostnetworkEnable = conf.get(KUBERNETES_HOSTNETWORK_SUPPORT)
+
   override def configurePod(pod: SparkPod): SparkPod = {
     val driverCustomEnvs = conf.roleEnvs
       .toSeq
@@ -123,6 +125,7 @@ private[spark] class BasicDriverFeatureStep(
         .withRestartPolicy("Never")
         .withNodeSelector(conf.nodeSelector().asJava)
         .addToImagePullSecrets(conf.imagePullSecrets(): _*)
+        .withHostNetwork(isHostnetworkEnable)
         .endSpec()
       .build()
 

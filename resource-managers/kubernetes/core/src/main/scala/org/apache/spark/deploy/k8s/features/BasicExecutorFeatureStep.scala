@@ -78,6 +78,8 @@ private[spark] class BasicExecutorFeatureStep(
     }
   private val executorLimitCores = kubernetesConf.get(KUBERNETES_EXECUTOR_LIMIT_CORES)
 
+  private val isHostnetworkEnable = kubernetesConf.get(KUBERNETES_HOSTNETWORK_SUPPORT)
+
   override def configurePod(pod: SparkPod): SparkPod = {
     val name = s"$executorPodNamePrefix-exec-${kubernetesConf.roleSpecificConf.executorId}"
 
@@ -182,6 +184,7 @@ private[spark] class BasicExecutorFeatureStep(
         .withRestartPolicy("Never")
         .withNodeSelector(kubernetesConf.nodeSelector().asJava)
         .addToImagePullSecrets(kubernetesConf.imagePullSecrets(): _*)
+        .withHostNetwork(isHostnetworkEnable)
         .endSpec()
       .build()
 
